@@ -13,7 +13,8 @@ VICINITY = [(-1, 1), (0, 1), (1, 1),
 
 
 def find_minefield_bounds(image: MatLike,
-                          main_color: Color) -> tuple[Position, Position] | None:
+                          main_color: Color) \
+        -> tuple[Position, Position] | None:
     mask = cv.inRange(image, np.array(main_color), np.array(main_color))
 
     masked_image = cv.bitwise_and(image, image, mask=mask)
