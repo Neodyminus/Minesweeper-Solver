@@ -130,7 +130,7 @@ def main() -> None:
                            "198,198,198").split(",")))   # type: ignore
     check_delay = int(os.getenv("CHECK_DELAY", 2))
     tile_padding = int(os.getenv("TILE_PADDING", 5))
-    field_padding = int(os.getenv("FIELD_PADDING", 12))\
+    field_padding = int(os.getenv("FIELD_PADDING", 12))
 
     while True:
         screenshot = np.array(pyautogui.screenshot())
