@@ -8,9 +8,7 @@ import pyautogui
 from common import find_minefield_bounds, \
     extract_grid_coordinates
 
-Position = tuple[int, int]
 Color = tuple[int, int, int]
-HintChange = tuple[Position, str]
 GridCoords = tuple[list[int], list[int]]
 
 
@@ -43,14 +41,14 @@ def main() -> None:
 
         field = find_minefield_bounds(right_side, main_color)
         if field is None:
-            print("Coudn't find the minefield.")
+            print("Coudn't find the minefield. Trying again in 1 second.")
             time.sleep(1)
             continue
 
         grid = extract_grid_coordinates(
             right_side, field, main_color, tile_padding, field_padding)
         if grid is None:
-            print("Coudn't extract the grid coordinates.")
+            print("Coudn't extract the grid coordinates. Trying again in 1 second.")
             time.sleep(1)
             continue
 
