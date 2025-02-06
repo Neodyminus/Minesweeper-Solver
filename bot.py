@@ -72,30 +72,40 @@ def apply_clicks(hint: list[str],
                  field_grid: GridCoords,
                  random_click: bool,
                  screen_scaling: float,
-                 click_delay: float) -> int:
+                 click_delay: float,
+                 turbo_mode: bool) -> True:
     x_coords, y_coords = field_grid
     tile_size = field_grid[0][1] - field_grid[0][0]
-    number_of_clicks = 0
+    click = False
 
     for y_idx, y in enumerate(y_coords[:-1]):
         for x_idx, x in enumerate(x_coords[:-1]):
             label = hint[y_idx][x_idx]
             if label == UNCLICKABLE or (label == EMPTY and not random_click):
                 continue
+            click = True
             if label == EMPTY:
                 pyautogui.click((x + tile_size // 2) / screen_scaling,
                                 (y + tile_size // 2) / screen_scaling)
                 random_click = False
-            elif label == SAFE:
+                if not turbo_mode:
+                    return True
+                time.sleep(click_delay)
+            if label == SAFE:
                 pyautogui.click((x + tile_size // 2) / screen_scaling,
                                 (y + tile_size // 2) / screen_scaling)
-            elif label == DANGEROUS:
+                if not turbo_mode:
+                    return True
+                time.sleep(click_delay)
+            if label == DANGEROUS:
                 pyautogui.click((x + tile_size // 2) / screen_scaling,
                                 (y + tile_size // 2) / screen_scaling,
                                 button="right")
-            number_of_clicks += 1
-            time.sleep(click_delay)
-    return number_of_clicks
+                if not turbo_mode:
+                    return True
+                time.sleep(click_delay)
+                return True
+    return click
 
 
 def main() -> None:
@@ -105,38 +115,39 @@ def main() -> None:
     main_color: Color = tuple(
         map(int, os.getenv("MAIN_COLOR",
                            "198,198,198").split(",")))   # type: ignore
-    wave_delay = int(os.getenv("WAVE_DELAY", 0))
     click_delay = float(os.getenv("CLICK_DELAY", 1))
     tile_padding = int(os.getenv("TILE_PADDING", 5))
     field_padding = int(os.getenv("FIELD_PADDING", 12))
+    turbo_mode = int(os.getenv("TURBO_MODE", 0)) != 0
 
-    last_number_of_clicks = 1
-    number_of_clicks = 1
-    while last_number_of_clicks + number_of_clicks > 0:
+    last_click = True
+    click = True
+    while last_click or click:
         screenshot = np.array(pyautogui.screenshot())
         screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2BGR)
 
         field = find_minefield_bounds(screenshot, main_color)
         if field is None:
-            print("Coudn't find the minefield.")
-            number_of_clicks = 1
+            print("Coudn't find the minefield. Trying again in 1 second.")
+            click = True
             time.sleep(1)
             continue
         grid = extract_grid_coordinates(
             screenshot, field, main_color, tile_padding, field_padding)
         if grid is None:
-            print("Coudn't extract the grid coordinates.")
-            number_of_clicks = 1
+            print("Coudn't extract the grid coordinates. Trying again in 1 second.")
+            click = True
             time.sleep(1)
             continue
         game_state = parse_game_state(screenshot, grid)
         hint = generate_hint_map(game_state)
 
-        last_number_of_clicks = number_of_clicks
-        number_of_clicks = apply_clicks(
-            hint, grid, number_of_clicks == 0, screen_scaling, click_delay)
+        last_click = click
+        click = apply_clicks(
+            hint, grid, not last_click, screen_scaling, click_delay, turbo_mode)
 
-        time.sleep(wave_delay)
+        if not turbo_mode:
+            time.sleep(click_delay)
 
 
 if __name__ == "__main__":
