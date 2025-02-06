@@ -139,13 +139,13 @@ def main() -> None:
 
         field = find_minefield_bounds(right_side, main_color)
         if field is None:
-            print("Coudn't find the minefield.")
+            print("Coudn't find the minefield. Trying again in 1 second.")
             time.sleep(check_delay)
             continue
         grid = extract_grid_coordinates(
             right_side, field, main_color, tile_padding, field_padding)
         if grid is None:
-            print("Coudn't extract the grid coordinates.")
+            print("Coudn't extract the grid coordinates. Trying again in 1 second.")
             time.sleep(check_delay)
             continue
         game_state = parse_game_state(right_side, grid)
@@ -158,6 +158,7 @@ def main() -> None:
         key = cv.waitKey(check_delay)
         if key == ord("q"):
             break
+    cv.destroyAllWindows()
 
 
 if __name__ == "__main__":
