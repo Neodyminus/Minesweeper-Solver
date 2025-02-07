@@ -4,7 +4,15 @@ Minesweeper Solver is an automated tool designed to assist players in solving Mi
 
 - **Hint Overlay** - Displays a visual guide indicating safe, dangerous, and incorrectly flagged tiles.
 
+    **Showcase**: 
+    
+    ![Hint Showcase](assets/hint_showcase.gif)
+
 - **Bot** - Automates tile clicks, solving the game for you with adjustable speed.
+
+    **Showcase**: 
+    
+    ![Bot Showcase](assets/bot_showcase.gif)
 
 
 > **Disclaimer:** Using the bot, especially with really small delays, may result in an IP ban from Minesweeper Online. Use it at your own risk.
@@ -60,7 +68,9 @@ Before using the solver, you may need to adjust certain settings in the `config.
 #### Bot-Specific Settings
 
 - `SCREEN_SCALING`
-    - Adjusts for your **OS display scaling** (e.g., 1.25, 1.5).
+    - If using **Windows** leave it at `1`
+
+    - Else adjusts for your **OS display scaling** (e.g., `1.25`, `1.5`).
     
     - Required for accurate clicking.
 
@@ -106,9 +116,9 @@ Calibration determines `FIELD_PADDING` and `TILE_PADDING` in `config.env`, as th
     - Use the following controls to align the green grid with the Minesweeper tiles:
 
     **Controls:**
-    - `W` → Increase **field padding** (moves the whole grid right)
+    - `W` → Increase **field padding** (moves the whole grid right and down)
     
-    - `S` → Decrease **field padding** (moves the whole grid left)
+    - `S` → Decrease **field padding** (moves the whole grid left and up)
     
     - `A` → Decrease **tile padding** (decreases the size of a single tile)
     
@@ -116,7 +126,11 @@ Calibration determines `FIELD_PADDING` and `TILE_PADDING` in `config.env`, as th
     
     - `Enter` → Save the settings and exit
 
-    3. **Completing Calibration**:
+    **Showcase:**
+
+    ![Calibration Showcase](assets/calibration_showcase.gif)
+
+3. **Completing Calibration**:
     - Once the grid is correctly aligned, press `Enter`.
     
     - The updated values will be saved in `config.env`.
