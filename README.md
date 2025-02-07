@@ -238,3 +238,17 @@ The bot will **automatically stop** when it has no moves left after scanning the
     - Enables rapid execution for faster gameplay by turning on turbo mode.
 
     - Uses hints to decide where to click next dynamically.
+
+### 4. `calibration.py`
+
+- **Purpose**: Helps calibrate the Minesweeper bot by adjusting tile and field padding values for accurate grid detection.
+
+- **Key Features**:
+
+    - Detects the minefield and extracts grid coordinates.
+    
+    - Displays an overlay of the detected grid.
+    
+    - Allows real-time adjustment of padding values using `W`, `A`, `S`, `D` keys.
+    
+    -Saves calibrated settings to `config.env` upon pressing `Enter`.
