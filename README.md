@@ -1,3 +1,86 @@
+# An updated and improved version of SamuelSoNChino's minesweeper-solver
+
+For now the only work I will be doing will be on the hint.py overlay system
+
+## READ BELOW FOR INSTRUCTIONS AND USAGE
+The easy version is:
+
+## 1. Make sure you have Python 3.8+ installed
+
+## 2. (cd to where you downloaded and extracted the folder)
+![image](https://github.com/user-attachments/assets/d353d7b4-8975-457f-957c-d70f41c4d1fd)
+
+run  ``` pip install -r requirements.txt  ``` 
+
+![image](https://github.com/user-attachments/assets/09375941-4fd6-4770-999d-de8240ed9a08)
+
+***In the same command prompt _without_ closing that window***
+Run
+``` python calibrate.py ``` 
+
+## 3. Place the Minesweeper Online window on the right half of your screen.
+
+   Make sure at least one tile is uncovered.
+
+   Use these keys to adjust:
+
+* W / S → move whole grid (field padding)
+
+* A / D → resize tiles (tile padding)
+
+  * Enter → save and exit
+
+
+## 4. Adjust config.env if Needed
+
+Open the config.env file if you want to tweak things like:
+
+   CHECK_DELAY → how often the overlay updates (default is fine) 
+
+   MAIN_COLOR → default works for Minesweeper Online light mode
+> [!NOTE]
+> ensure if using default that the game theme is on "Classic - Light"
+
+> [!IMPORTANT]
+> if using the minesweeper online desktop app, make sure the "show brightness" setting is on, and set it to 100
+
+|   |  |
+| ------------- | ------------- |
+| <img src="https://github.com/user-attachments/assets/3534e842-91de-4211-a63c-d66362c98a8c" width="125" height="100"/>| ![image](https://github.com/user-attachments/assets/15349921-93e8-4283-9ad0-df621497d87b) |
+| ![image](https://github.com/user-attachments/assets/d6a88491-cfaa-40bb-8501-519db88b47df) |  ![image](https://github.com/user-attachments/assets/2008a59f-1c0e-4002-b7cb-1b724d546583)  |
+
+
+## 4. Run the Hint Overlay
+
+Now you’re ready to run the hint system:
+
+``` python hint.py ```
+
+(_or just double click the hint.py file_) 
+
+> [!IMPORTANT] 
+> The game window must stay on the right half of the screen.
+> The overlay window will open on the left — don’t cover the game window!
+
+✅ Overlay Colors
+
+    🟩 Green = Safe to click
+
+    🟥 Red = Mine (unflagged)
+
+    🟨 Yellow = Wrong flag
+
+    🟪 Purple = Flag placed, but nearby flag might be wrong
+
+
+
+
+
+(Below is the read.me from the original project) 
+
+(thanks again and all credit goes to SamuelSoNChino, I've been searching for something like this for so long, and with his Ive been able to use it as a base *because learning about pyautogui seems tedious*)
+
+
 # Minesweeper Solver
 
 Minesweeper Solver is an automated tool designed to assist players in solving Minesweeper on the [Minesweeper Online website](https://minesweeper.online) developed in Python using OpenCV, NumPy and Pyatuogui. The project consists of two main components:
