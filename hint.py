@@ -10,6 +10,8 @@ from common import find_minefield_bounds, \
     parse_game_state, \
     get_neighbors
 
+from itertools import product
+
 Position = tuple[int, int]
 Color = tuple[int, int, int]
 HintChange = tuple[Position, str]
@@ -79,6 +81,64 @@ def validate_mine_flags(tile_index: Position,
                        minefield[i][j] == "F" and hint[i][j] == NO_LABEL)
     return changes
 
+def analyze_double_tile_patterns(minefield: list[str], hint: list[str]) -> list[HintChange]:
+    height = len(minefield)
+    width = len(minefield[0]) if height > 0 else 0
+    changes: list[HintChange] = []
+    directions = [(0, 1), (1, 0)]  # right and down only to avoid redundancy
+
+    def is_number(s: str) -> bool:
+        return s.isdigit() and s != "0"
+
+    for y in range(height):
+        for x in range(width):
+            if not is_number(minefield[y][x]):
+                continue
+            for dy, dx in directions:
+                ny, nx = y + dy, x + dx
+                if not (0 <= ny < height and 0 <= nx < width):
+                    continue
+                if not is_number(minefield[ny][nx]):
+                    continue
+
+                # Fetch tile values
+                val1 = int(minefield[y][x])
+                val2 = int(minefield[ny][nx])
+
+                # Get neighbors
+                n1 = set(get_neighbors((y, x), minefield))
+                n2 = set(get_neighbors((ny, nx), minefield))
+                shared = n1 & n2
+                only1 = n1 - n2
+                only2 = n2 - n1
+
+                # Get counts
+                f1 = sum(1 for i, j in n1 if minefield[i][j] == "F")
+                f2 = sum(1 for i, j in n2 if minefield[i][j] == "F")
+                u1 = [pos for pos in only1 if minefield[pos[0]][pos[1]] == "?"]
+                u2 = [pos for pos in only2 if minefield[pos[0]][pos[1]] == "?"]
+                shared_unknown = [pos for pos in shared if minefield[pos[0]][pos[1]] == "?"]
+
+                rem1 = val1 - f1
+                rem2 = val2 - f2
+
+                # Example inference rule: If rem2 - rem1 == len(u2), then all u2 are mines
+                if rem2 > rem1 and rem2 - rem1 == len(u2):
+                    for pos in u2:
+                        if hint[pos[0]][pos[1]] == NO_LABEL:
+                            changes.append((pos, DANGEROUS))
+                # Or vice versa: if rem1 - rem2 == len(u1), u1 are mines
+                if rem1 > rem2 and rem1 - rem2 == len(u1):
+                    for pos in u1:
+                        if hint[pos[0]][pos[1]] == NO_LABEL:
+                            changes.append((pos, DANGEROUS))
+                # Safe inference: if rem1 == rem2 and shared_unknown and u1/u2 exist, maybe they're safe
+                if rem1 == rem2 and shared_unknown and not u1 and not u2:
+                    for pos in shared_unknown:
+                        if hint[pos[0]][pos[1]] == NO_LABEL:
+                            changes.append((pos, SAFE))
+    return changes
+
 
 def generate_hint_map(minefield: list[str]) -> list[str]:
     hint = [len(row) * NO_LABEL for row in minefield]
@@ -103,6 +163,11 @@ def generate_hint_map(minefield: list[str]) -> list[str]:
                     for (i, j), new_label in changes:
                         hint[i] = hint[i][:j] + new_label + hint[i][j + 1:]
                         change_count += 1
+    # Add pattern inference after normal rules
+    changes = analyze_double_tile_patterns(minefield, hint)
+    for (i, j), new_label in changes:
+        hint[i] = hint[i][:j] + new_label + hint[i][j + 1:]
+
     return hint
 
 
